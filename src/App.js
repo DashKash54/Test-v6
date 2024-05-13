@@ -1,23 +1,33 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import lit from './lit';
 import './App.css';
 
 function App() {
+  const [client, setClient] = useState(lit);
+  useEffect(() => {
+    if(client !== null) {
+      (async () => {
+        await client.connect();
+      })();
+    }
+  }, []);
+
+  const myFunc = async () => {
+    // await client.getAuthSig();
+    const sessionSigs = await client.getSessionSigs();
+    await client.encrypt(sessionSigs);
+    // await client.litActions(sessionSigs);
+  }
+
+  const mySessionSig = async () => {
+    const sessionSigs = await client.getPKPSessionSigs();
+    console.log(sessionSigs);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={myFunc}>Click me</button>
+      <button onClick={mySessionSig}>SessionSig</button>
     </div>
   );
 }
